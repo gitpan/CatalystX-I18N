@@ -1,0 +1,110 @@
+package TestApp::Controller::Base;
+
+use strict;
+use warnings;
+
+use parent qw/Catalyst::Controller/;
+
+sub test1 : Local Args(0) {
+    my ($self,$c) = @_;
+    
+    $c->detach('TestApp::View::Test',[
+        {
+            locale  => $c->locale,
+        }
+    ]);
+}
+
+sub test2 : Local Args(0) {
+    my ($self,$c) = @_;
+    
+    my $locale = $c->get_locale();
+    
+    $c->detach('TestApp::View::Test',[
+        {
+            locale      => $locale,
+        }
+    ]);
+}
+
+sub test3 : Local Args(0) {
+    my ($self,$c) = @_;
+    
+    $c->detach('TestApp::View::Test',[
+        {
+            session     => $c->get_locale_from_session() || undef,
+            user        => $c->get_locale_from_user() || undef,
+            browser     => $c->get_locale_from_browser() || undef,
+        }
+    ]);
+}
+
+sub test4 : Local Args(0) {
+    my ($self,$c) = @_;
+    
+    my $locale = $c->get_locale();
+    my $request = $c->request;
+    
+    $c->detach('TestApp::View::Test',[
+        {
+            locale          => $locale,
+            locale_from_c   => $c->locale,
+            territory       => $c->territory,
+            language        => $c->language,
+            datetime        => {
+                date            => $c->i18n_datetime_now->dmy,
+                locale          => $c->i18n_datetime_now->locale->name,
+                time            => $c->i18n_datetime_now->hms,
+                timezone        => $c->i18n_timezone->name,
+            },
+            request         => {
+                accept_language     => $request->accept_language,
+                browser_language    => $request->browser_language,
+                browser_territory   => $request->browser_territory,
+                client_country      => $request->client_country,
+                browser_detect      => ref($request->browser_detect),
+            },
+            number_format   => $c->i18n_numberformat->format_price(27.03),
+        }
+    ]);
+}
+
+sub test5 : Local Args(1) {
+    my ($self,$c,$locale) = @_;
+    
+    $c->locale($locale);
+    
+    $c->detach('TestApp::View::Test',[
+        {
+            locale          => $c->locale,
+            translation     => {
+                (map 
+                    { $_ => $c->maketext('string'.$_,$_) } (1..6),
+                ),
+            }
+        }
+    ]);
+}
+
+sub test6 : Local Args(0) {
+    my ($self,$c) = @_;
+    
+    my $response = {};
+    my $locale_config = $c->config->{I18N}{locales};
+    while (my ($locale,$config) = each %$locale_config) {
+        next
+            if $config->{inactive} == 1;
+        $c->locale($locale);
+        $response->{$locale} = {
+            timezone    => $c->i18n_timezone->name,
+        };
+    }
+    
+    
+    $c->detach('TestApp::View::Test',[
+        $response
+    ]);
+}
+
+1;
+
