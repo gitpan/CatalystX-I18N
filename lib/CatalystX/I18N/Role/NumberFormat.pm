@@ -62,6 +62,8 @@ after 'set_locale' => sub {
 no Moose::Role;
 1;
 
+=encoding utf8
+
 =head1 NAME
 
 CatalystX::I18N::Role::NumberFormat - Support for I18N number formating
@@ -98,6 +100,7 @@ upon the first call of the method.
 =head3 i18n_numberformat
 
  my $number_format = $c->i18n_numberformat;
+ $number_format->format_price(27.03);
 
 Returns a L<Number::Format> object for your current locale. 
 
