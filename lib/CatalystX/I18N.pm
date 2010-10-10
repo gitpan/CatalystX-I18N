@@ -3,10 +3,9 @@ package CatalystX::I18N;
 # ============================================================================
 
 use Moose;
-use 5.010;
 
 use version;
-our $VERSION = version->new('1.01');
+our $VERSION = version->new('1.02');
 our $AUTHORITY = 'cpan:MAROS';
 
 1;
@@ -82,6 +81,16 @@ CatalystX::I18N - Catalyst internationalisation (I18N) framework
      $c->stash->{language} = $c->language;
      $c->stash->{localtime} = $c->i18n_datetime_format_date->format_datetime(DateTime->now);
  }
+
+If you want to load all available roles and traits you can use 
+L<CatalystX::I18N::Role::All> as a shortcut.
+
+ package MyApp::Catalyst;
+ use strict;
+ use warnings;
+ use Catalyst qw/
+     +CatalystX::I18N::Role::All
+ /;
 
 =head1 DESCRIPTION
 

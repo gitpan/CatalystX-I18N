@@ -3,6 +3,9 @@ abstract: 'Catalyst internationalisation (I18N) framework'
 author:
   - 'Maroš Kollár'
 build_requires:
+  Catalyst::Plugin::Session: 0
+  Catalyst::Plugin::Session::State::Cookie: 0
+  Catalyst::Plugin::Session::Store::File: 0
   ExtUtils::MakeMaker: 6.42
   JSON::Any: 0
   Test::Most: 0
@@ -37,8 +40,9 @@ requires:
   Moose: 0
   MooseX::Types::Path::Class: 0
   Number::Format: 0
-  perl: 5.10.0
+  Path::Class: 0
+  perl: 5.8.0
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/maros/CatalystX-I18N.git
-version: 1.010
+version: 1.020

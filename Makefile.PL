@@ -10,14 +10,15 @@ all_from        $from;
 readme_from     $from;
 readme_markdown_from $from;
 
-perl_version    '5.010';
+perl_version    '5.008';
 
 # Specific dependencies
 requires        'Catalyst::Runtime'                     => '5.80004';
 requires        'Moose'                                 => 0;
 
-requires        'Clone'                                 => 0;
+requires        'Path::Class'                           => 0;
 requires        'MooseX::Types::Path::Class'            => 0; 
+requires        'Clone'                                 => 0;
 requires        'CatalystX::RoleApplicator'             => 0;
 
 requires        'Locale::Maketext::Lexicon'             => 0;
@@ -36,6 +37,9 @@ requires        'Number::Format'                        => 0;
 build_requires  'Test::Most'                            => 0;
 build_requires  'Test::WWW::Mechanize::Catalyst'        => 0;
 build_requires  'JSON::Any'                             => 0;
+build_requires  'Catalyst::Plugin::Session'             => 0;
+build_requires  'Catalyst::Plugin::Session::State::Cookie'=> 0;
+build_requires  'Catalyst::Plugin::Session::Store::File'=> 0;
 
 author_requires 'Test::Pod'                             => '1.14';
 author_requires 'Test::Pod::Coverage'                   => '1.04';

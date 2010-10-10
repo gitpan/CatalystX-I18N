@@ -5,9 +5,8 @@ package CatalystX::I18N::Model::L10N;
 use Moose;
 extends 'Catalyst::Model';
 
-use 5.010;
-
 use CatalystX::I18N::TypeConstraints;
+use Path::Class;
 
 has 'class' => (
     is          => 'rw', 
