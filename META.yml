@@ -42,8 +42,9 @@ requires:
   MooseX::Types::Path::Class: 0
   Number::Format: 0
   Path::Class: 0
+  parent: 0
   perl: 5.8.0
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/maros/CatalystX-I18N.git
-version: 1.030
+version: 1.040

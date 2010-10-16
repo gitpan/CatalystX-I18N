@@ -6,8 +6,10 @@ use Moose::Role;
 requires qw(config response log);
 
 use CatalystX::I18N::TypeConstraints;
-use Clone qw(clone);
-use POSIX qw(locale_h);
+use Clone qw();
+use POSIX qw();
+
+our $ORIGINAL_LOCALE;
 
 has 'locale' => (
     is          => 'rw',
@@ -32,7 +34,7 @@ sub i18n_config {
     return {}
         unless defined $c->config->{I18N}{locales}{$c->locale};
     
-    my $config = clone($c->config->{I18N}{locales}{$c->locale});
+    my $config = Clone::clone($c->config->{I18N}{locales}{$c->locale});
     $config->{locale} = $c->locale;
     
     return $config;
@@ -89,8 +91,20 @@ sub set_locale {
     return 
         unless exists $c->config->{I18N}{locales}{$locale};
     
-    # Set posix locale
-    setlocale( &POSIX::LC_ALL, $locale );
+    # Save original locale
+    $ORIGINAL_LOCALE ||= POSIX::setlocale(POSIX::LC_ALL);
+    
+    # Set locale
+    my $set_locale = $locale.'.UTF-8';
+    my $set_locale_result = POSIX::setlocale( POSIX::LC_ALL, $set_locale);
+    unless (defined $set_locale_result
+        && $set_locale eq $set_locale_result) {
+        $set_locale_result = POSIX::setlocale( POSIX::LC_ALL, $locale);
+        unless (defined $set_locale_result) {
+            $c->log->warn(sprintf("Could not setlocale '%s' or '%s' (do you have this locale installed?)",$set_locale,$locale))
+                if $c->debug;
+        }
+    }
     
     # Set content language header
     $c->response->content_language($language)
@@ -107,6 +121,12 @@ sub set_locale {
         if ! $meta_attribute->has_value($c)
         || $meta_attribute->get_raw_value($c) ne $locale;
 }
+
+after finalize => sub {
+    my ($c) = @_;
+    # Restore original locale
+    POSIX::setlocale( POSIX::LC_ALL, $ORIGINAL_LOCALE );
+};
 
 after setup_finalize => sub {
     my ($app) = @_;
@@ -164,6 +184,7 @@ after setup_finalize => sub {
             }
         }
     }
+    # Check inheritance tree for circular references
     foreach my $locale (keys %$locales) {
         my $locale_config = $locales->{$locale};
         unless (exists $locale_config->{_inherits}) {

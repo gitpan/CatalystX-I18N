@@ -26,24 +26,48 @@ has 'directories' => (
     default     => sub { [] },
 );
 
-sub new {
+has '_app' => (
+    is          => 'rw', 
+    isa         => 'Str',
+    required    => 1,
+);
+
+around BUILDARGS => sub {
+    my $orig  = shift;
     my ( $self,$app,$config ) = @_;
     
-    $self = $self->next::method( $config );
+    if (defined $config->{directories}
+        && ref($config->{directories}) ne 'ARRAY') {
+        $config->{directories} = [ $config->{directories} ];
+    }
     
-    my $class = $self->class() || $app .'::L10N';
-    $self->class($class);
-    
-    unless (scalar @{$self->directories}) {
-        #warn('HOME:'.$self->config->{home} || '');
+    # Build default directory path unless configured
+    unless (defined $config->{directories}
+        && scalar @{$config->{directories}} > 0) {
         my $calldir = $app;
         $calldir =~ s{::}{/}g;
         my $file = "$calldir.pm";
         my $path = $INC{$file};
         $path =~ s{\.pm$}{/L10N};
-        $self->directories([ Path::Class::Dir->new($path) ]);
+        $config->{directories} = [ Path::Class::Dir->new($path) ];
     }
     
+    # Get L10N class
+    $config->{class} ||= $app .'::L10N';
+    
+    # Set _app class
+    $config->{_app} = $app;
+    
+    # Call original BUILDARGS
+    return $self->$orig($app,$config);
+};
+
+sub BUILD {
+    my ($self) = @_;
+    
+    my $class = $self->class;
+
+    # Load L10N class
     eval {
         Class::MOP::load_class($class);
         return 1;
@@ -52,6 +76,9 @@ sub new {
     Catalyst::Exception->throw(sprintf("Could initialize '%s' because is is not a 'Locale::Maketext' class",$class))
         unless $class->isa('Locale::Maketext');
     
+    my $app = $self->_app;
+    
+    # Load lexicons in the L10N class if possible
     if ($class->can('load_lexicon')) {
         my (@locales,%inhertiance,$config);
         $config = $app->config->{I18N}{locales};
@@ -70,10 +97,8 @@ sub new {
             inheritance         => \%inhertiance,
         );
     } else {
-        $self->log->warn(sprintf("'%s' does not implement a 'load_lexicon' method",$class))
+        $app->log->warn(sprintf("'%s' does not implement a 'load_lexicon' method",$class))
     }
-    
-    return $self;
 }
 
 sub ACCEPT_CONTEXT {
@@ -86,7 +111,13 @@ sub ACCEPT_CONTEXT {
     Catalyst::Exception->throw(sprintf("Could not fetch lanuage handle for locale '%s'",$c->locale))
         unless ( scalar $handle );
     
-    $handle->fail_with( sub { } );
+    if ($self->can('fail_with')) {
+        $handle->fail_with( sub { 
+            $self->fail_with($c,@_);
+        } );
+    } else {
+        $handle->fail_with( sub { } );
+    }
     
     return $handle;
 }
@@ -103,6 +134,7 @@ CatalystX::I18N::Model::L10N - Glues CatalystX::I18N::L10N into Catalyst
 
 =head1 SYNOPSIS
 
+ # In your catalyst base class
  package MyApp::Catalyst;
  use Catalyst qw/CatalystX::I18N::Role::Base/;
  
@@ -113,17 +145,25 @@ CatalystX::I18N::Model::L10N - Glues CatalystX::I18N::L10N into Catalyst
  );
  
  
+ # Create a model class
  package MyApp::Model::L10N;
  use parent qw/CatalystX::I18N::Model::L10N/;
  
  
+ # Create a L10N class (must be a Locale::Maketext class)
+ package MyApp::L10N;
+ use parent qw/CatalystX::I18N::L10N/;
+ 
+ 
+ # In your controller class(es)
  package MyApp::Controller::Main;
  use parent qw/Catalyst::Controller/;
  
  sub action : Local {
      my ($self,$c) = @_;
      
-     $c->stash->{title} = $c->model('L10N')->maketext('Hello world');
+     my $model = $c->model('L10N');
+     $c->stash->{title} = $model->maketext('Hello world');
      # See CatalystX::I18N::Role::Maketext for a convinient wrapper
  }
 
@@ -131,6 +171,21 @@ CatalystX::I18N::Model::L10N - Glues CatalystX::I18N::L10N into Catalyst
 
 This model glues a L<CatalystX::I18N::L10N> class (or any other 
 L<Locale::Maketext> class) with Catalyst. 
+
+The method C<fail_with> will be called for each missing msgid if present
+in your model class. 
+
+ package MyApp::Model::L10N;
+ use parent qw/CatalystX::I18N::Model::L10N/;
+ 
+ sub fail_with {
+     my ($self,$c,$language_handle,$msgid,$params) = @_;
+     # Do somenthing clever
+     return $string;
+ }
+
+See L<Catalyst::Helper::Model::L10N> for gerating an L10N model from the 
+command-line.
 
 =head1 CONFIGURATION
 

@@ -2,11 +2,13 @@
 package CatalystX::I18N::Role::NumberFormat;
 # ============================================================================
 
-use Moose::Role;
+use utf8;
 
-use CatalystX::I18N::TypeConstraints;
+use Moose::Role;
+use namespace::autoclean;
 
 use Number::Format;
+use CatalystX::I18N::TypeConstraints;
 
 has 'i18n_numberformat' => (
     is          => 'rw',
@@ -22,8 +24,14 @@ sub _build_i18n_numberformat {
     my $locale = $c->locale;
     my $config = $c->i18n_config;
     
-    my $lconv = POSIX::localeconv();
+    my $lconv = {};
+    # Only load localeconv if locale is installed/correctly loaded
+    my @current_locale = map { s/\.UTF-8$//i; $_ } split(/\//,POSIX::setlocale(POSIX::LC_ALL));
+    if (grep { $c->locale eq $_ } @current_locale) {
+        $lconv = POSIX::localeconv();
+    }
     
+    # Build custom defined for 5.8
     my $defined_or = sub {
         foreach (@_) {
             return $_
@@ -126,6 +134,9 @@ can be overdriven in your Catalyst I18N configuration:
          }
      },
  );
+
+Of course fetching the default locale settings via L<POSIX::localeconv> works
+only if you have the requested locales installed.
 
 The following configuration options are available (see L<Number::Format> for
 detailed documentation):
