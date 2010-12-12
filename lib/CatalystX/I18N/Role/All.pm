@@ -13,7 +13,28 @@ with qw(
     CatalystX::I18N::Role::Maketext
     CatalystX::I18N::Role::GetLocale
     CatalystX::I18N::Role::NumberFormat
+    CatalystX::I18N::Role::Collate
 );
+
+
+around 'setup_component' => sub {
+    my $orig  = shift;
+    my ($self,$component) = @_;
+    
+    Class::MOP::load_class($component);
+    
+    if ($component->isa('Catalyst::View::TT')
+        && $component->can('meta')) {
+        my $component_meta = $component->meta;
+        unless ($component_meta->does_role('CatalystX::I18N::TraitFor::ViewTT')) {
+            if ($component_meta->is_mutable) {
+                Moose::Util::apply_all_roles($component_meta, 'CatalystX::I18N::TraitFor::ViewTT')
+            }
+        }
+    }
+    
+    return $self->$orig($component);
+};
 
 no Moose::Role;
 1;
@@ -45,6 +66,7 @@ Is same as
      +CatalystX::I18N::Role::GetLocale
      +CatalystX::I18N::Role::DateTime
      +CatalystX::I18N::Role::Maketext
+     +CatalystX::I18N::Role::Collate
  /;
  
  use CatalystX::RoleApplicator;

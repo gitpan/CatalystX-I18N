@@ -5,6 +5,8 @@ use warnings;
 
 use parent qw/Catalyst::Controller/;
 
+our @LIST = qw(Ägypten Äquatorialguinea Äthiopien Afghanistan Albanien Algerien Andorra Bahamas Zypern);
+
 sub test1 : Local Args(0) {
     my ($self,$c) = @_;
     
@@ -115,6 +117,25 @@ sub test6 : Local Args(0) {
     ]);
 }
 
+sub test7 : Local Args(0) {
+    my ($self,$c) = @_;
+    $c->locale('de_AT');
+    $c->stash->{sortlist} = \@LIST;
+    $c->detach('TestApp::View::TT');
+}
+
+sub test8 : Local Args(0) {
+    my ($self,$c) = @_;
+    $c->locale('de_AT');
+    
+    $c->detach('TestApp::View::Test',[
+        {
+            sort_perl   => join(',',sort @LIST),
+            sort_collate=> join(',',$c->i18n_sort(@LIST)),
+        }
+    
+    ]);
+}
 
 1;
 
