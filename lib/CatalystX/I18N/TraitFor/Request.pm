@@ -2,6 +2,7 @@
 package CatalystX::I18N::TraitFor::Request;
 # ============================================================================
 
+use namespace::autoclean;
 use Moose::Role;
 requires qw(headers user_agent address);
 
@@ -82,9 +83,17 @@ sub _build_browser_language {
     my $language = $self->browser_detect()->language();
     
     return
-        unless $language;
+        unless defined $language;
     
-    return lc($language);
+    $language = lc($language);
+    
+    my $constraint = Moose::Util::TypeConstraints::find_type_constraint('CatalystX::I18N::Type::Language');
+    
+    return
+        unless $constraint->check($language);
+    
+    
+    return $language;
 }
 
 sub _build_browser_territory {
@@ -94,6 +103,11 @@ sub _build_browser_territory {
     
     return
         if ! defined $territory || ! $territory || $territory eq '**';
+        
+    my $constraint = Moose::Util::TypeConstraints::find_type_constraint('CatalystX::I18N::Type::Territory');
+    
+    return
+        unless $constraint->check($territory);
     
     return uc($territory);
 }

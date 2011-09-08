@@ -2,6 +2,7 @@
 package CatalystX::I18N::Role::Base;
 # ============================================================================
 
+use namespace::autoclean;
 use Moose::Role;
 requires qw(config response log);
 
@@ -224,7 +225,7 @@ CatalystX::I18N::Role::Base - Basic catalyst I18N support
 
 =head1 DESCRIPTION
 
-This role is needed by all other roles and provides basic I18N support for
+This role is required by all other roles and provides basic I18N support for
 Catalyst.
 
 =head1 METHODS

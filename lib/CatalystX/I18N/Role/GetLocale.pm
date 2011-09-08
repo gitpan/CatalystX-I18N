@@ -2,10 +2,10 @@
 package CatalystX::I18N::Role::GetLocale;
 # ============================================================================
 
+use namespace::autoclean;
 use Moose::Role;
 
 use CatalystX::I18N::TypeConstraints;
-
 
 sub check_locale {
     my ($c,$locale) = @_;
@@ -89,7 +89,7 @@ sub get_locale_from_browser  {
     if ($c->request->can('browser_territory')) {
         my $territory = $c->request->browser_territory;
         unshift(@$territories,uc($territory))
-            if $territory;
+            if ($territory);
     }
     
     my $locale_config = $c->config->{I18N}{locales};

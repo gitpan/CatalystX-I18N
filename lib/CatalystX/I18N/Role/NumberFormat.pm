@@ -2,13 +2,16 @@
 package CatalystX::I18N::Role::NumberFormat;
 # ============================================================================
 
+use namespace::autoclean;
 use utf8;
 
 use Moose::Role;
-use namespace::autoclean;
 
 use Number::Format;
 use CatalystX::I18N::TypeConstraints;
+
+use POSIX qw();
+
 
 has 'i18n_numberformat' => (
     is          => 'rw',

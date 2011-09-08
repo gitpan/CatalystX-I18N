@@ -2,6 +2,7 @@
 package CatalystX::I18N::Role::DateTime;
 # ============================================================================
 
+use namespace::autoclean;
 use Moose::Role;
 
 use CatalystX::I18N::TypeConstraints;
@@ -152,7 +153,7 @@ CatalystX::I18N::Role::DateTime - Support for I18N datetime
  sub action : Local {
      my ($self,$c) = @_;
      
-     $c->stash->{timestamp} = $c->datetime_format_date->format_datetime($datetime);
+     $c->stash->{timestamp} = $c->i18n_datetime_format_date->format_datetime($datetime);
  }
 
 =head1 DESCRIPTION

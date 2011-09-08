@@ -3,6 +3,8 @@ package CatalystX::I18N::Role::All;
 # ============================================================================
 
 use CatalystX::I18N::Meta::Role;
+
+use namespace::autoclean;
 use Moose::Role -metaclass => 'CatalystX::I18N::Meta::Role';
 requires qw(response_class request_class);
 
@@ -67,6 +69,7 @@ Is same as
      +CatalystX::I18N::Role::DateTime
      +CatalystX::I18N::Role::Maketext
      +CatalystX::I18N::Role::Collate
+     +CatalystX::I18N::Role::NumberFormat
  /;
  
  use CatalystX::RoleApplicator;
