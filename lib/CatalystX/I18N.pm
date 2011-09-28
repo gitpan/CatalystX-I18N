@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use version;
-our $VERSION = version->new('1.06');
+our $VERSION = version->new('1.07');
 our $AUTHORITY = 'cpan:MAROS';
 
 1;
@@ -137,7 +137,7 @@ Provides access to L<Locale::Maketext> classes via Catalyst models.
 
 =item * L<CatalystX::I18N::Maketext>
 
-Wrapper arround L<Locale::Maketext>. Can also be used outside of Catalyst.
+Wrapper around L<Locale::Maketext>. Can also be used outside of Catalyst.
 
 =back
 

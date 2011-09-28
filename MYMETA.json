@@ -1,10 +1,10 @@
 {
    "abstract" : "Catalyst internationalisation (I18N) framework",
    "author" : [
-      "MaroÅ¡ KollÃ¡r"
+      "Maroš Kollár"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "ExtUtils::MakeMaker version 6.59, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "Module::Install version 1.01, CPAN::Meta::Converter version 2.112621",
    "license" : [
       "perl_5"
    ],
@@ -15,8 +15,9 @@
    "name" : "CatalystX-I18N",
    "no_index" : {
       "directory" : [
+         "inc",
          "t",
-         "inc"
+         "xt"
       ]
    },
    "prereqs" : {
@@ -35,7 +36,7 @@
       },
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : 0
+            "ExtUtils::MakeMaker" : "6.42"
          }
       },
       "runtime" : {
@@ -62,5 +63,13 @@
       }
    },
    "release_status" : "stable",
-   "version" : "1.06"
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "git://github.com/maros/CatalystX-I18N.git"
+      }
+   },
+   "version" : "1.060"
 }
