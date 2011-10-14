@@ -15,7 +15,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 dynamic_config: 0
-generated_by: 'Module::Install version 1.01, CPAN::Meta::Converter version 2.112621'
+generated_by: 'Module::Install version 1.02, CPAN::Meta::Converter version 2.112621'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -43,9 +43,10 @@ requires:
   Number::Format: 0
   Path::Class: 0
   Unicode::Collate: 0
+  Unicode::Collate::Locale: 0
   parent: 0
   perl: 5.008
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/maros/CatalystX-I18N.git
-version: 1.060
+version: 1.080

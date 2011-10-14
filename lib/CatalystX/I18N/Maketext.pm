@@ -8,6 +8,7 @@ use warnings;
 use parent qw(Locale::Maketext);
 
 use Locale::Maketext::Lexicon;
+use CatalystX::I18N::TypeConstraints;
 #use Locale::Maketext::Lexicon::Gettext;
 use Path::Class;
 
@@ -29,7 +30,7 @@ sub load_lexicon {
     die "Invalid locales"
         unless defined $locales
         && scalar @$locales > 0
-        && ! grep {  $_ !~ /^([a-z]{2})(_[A-Z]{2})?$/ } @$locales;
+        && ! grep {  $_ !~ $CatalystX::I18N::TypeConstraints::LOCALE_RE } @$locales;
     
     {
         no strict 'refs';
@@ -62,7 +63,7 @@ sub load_lexicon {
         
         my @directory_content =  $directory->children();
         
-        # Load all avaliable po files
+        # Load all avaliable message files
         foreach my $locale (@$locales) {
             my $lc_locale = lc($locale);
             $lc_locale =~ s/-/_/g;

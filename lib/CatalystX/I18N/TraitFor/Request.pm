@@ -54,6 +54,7 @@ sub _build_accept_language {
     return
         unless $accept_language;
     
+    # Extract priority
     my @accepted_languages = 
         map {
             my @tmp = split( /;\s*q=/, $_ );
@@ -61,20 +62,33 @@ sub _build_accept_language {
             \@tmp;
         } split( /\s*,\s*/, $accept_language );
     
-    my @sorted_languages;
+    my @sorted_locales;
+    my @super_languages;
     
     no warnings 'once';
+    # Convert language tags to locales
     foreach my $element (sort { $b->[1] <=> $a->[1] } @accepted_languages) {
-        my ($language,$territory) = split /[_-]/,$element->[0];
-        my $return = lc($language);
-        $return .= '_'.uc($territory)
-            if $territory;
+        my ($language,$dialect) = split /[_-]/,$element->[0];
+        my $locale = lc($language);
+        if (defined $dialect) {
+            $locale .= '_'.uc($dialect);
+            push(@super_languages,$language);
+        }
         next
-            unless $return =~ $CatalystX::I18N::TypeConstraints::LOCALE_RE;
-        push(@sorted_languages,$return);
-        
+            unless $locale =~ $CatalystX::I18N::TypeConstraints::LOCALE_RE;
+        push(@sorted_locales,$locale);
     }
-    return \@sorted_languages;
+    
+    # Add super languages to locales
+    foreach my $lanuage (@super_languages) {
+        next
+            if $lanuage ~~ \@sorted_locales;
+        next
+            unless $lanuage =~ $CatalystX::I18N::TypeConstraints::LANGUAGE_RE;
+        push(@sorted_locales,$lanuage);
+    }
+    
+    return \@sorted_locales;
 }
 
 sub _build_browser_language {
@@ -157,11 +171,11 @@ CatalystX::I18N::TraitFor::Request - Adds various I18N methods to a Catalyst::Re
 
 =head1 DESCRIPTION
 
-Adds several methods to a L<Catalyst::Request> object that help you determine
-a users language and locale.
+Adds several attributes to a L<Catalyst::Request> object that help you 
+determine a users language and locale.
 
-All methods are lazy. This means that the values will be only calculated
-upon the first call of the method.
+All attributes are lazy. This means that the values will be only calculated
+when the attributes is read/called the first time.
 
 =head1 METHODS
 
@@ -170,7 +184,7 @@ upon the first call of the method.
  my @languages = $c->request->accept_language();
 
 Returns an ordered list of accepted languages (from the 'Accept-Language'
-header)
+header). Inavlid entries in the language headers are filtered.
 
 =head3 browser_language
 

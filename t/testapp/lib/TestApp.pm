@@ -8,7 +8,9 @@ use Catalyst qw/
     Session::State::Cookie
     
     +CatalystX::I18N::Role::All
+    +CatalystX::I18N::Role::DataLocalize
 /;
+#    +CatalystX::I18N::Role::DataLocalize
 #    +CatalystX::I18N::Role::Base
 #    +CatalystX::I18N::Role::DateTime
 #    +CatalystX::I18N::Role::Maketext
@@ -22,13 +24,14 @@ use Catalyst qw/
 our $VERSION = '0.01';
 
 __PACKAGE__->config( 
-    name            => 'TestApp', 
-    session         => {},
-    'View::TT'      => {
-        INCLUDE_PATH    => [ __PACKAGE__->path_to('root','template') ]
+    name                    => 'TestApp', 
+    session                 => {},
+    'View::TT'              => {
+        INCLUDE_PATH            => [ __PACKAGE__->path_to('root','template') ]
     },
-    'Model::Maketext'   => {},
-    'I18N'          => {
+    'Model::Maketext'       => {},
+    'Model::DataLocalize'   => {},
+    'I18N'                  => {
         default_locale          => 'de_AT',
         locales                 => {
             'de'                    => {
@@ -66,6 +69,6 @@ __PACKAGE__->config(
     },
 );
 
-TestApp->setup;
+__PACKAGE__->setup;
 
 1;

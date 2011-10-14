@@ -4,7 +4,7 @@ package CatalystX::I18N::TraitFor::ViewTT;
 
 use namespace::autoclean;
 use Moose::Role;
-requires qw(template);
+requires qw(template render);
 
 use Template::Stash;
 
@@ -41,7 +41,7 @@ around new => sub {
     my $orig  = shift;
     my ( $self,$app,$config ) = @_;
     
-    $config->{CATALYST_VAR} ||= 'c';
+    $config->{CATALYST_VAR} ||= '_c';
     $config->{FILTERS} ||= {};
 
     if ($app->can('i18n_numberformat')) {
@@ -52,6 +52,10 @@ around new => sub {
         $config->{FILTERS}{maketext} ||= [ \&_i18n_maketext_factory, 1 ];
     }
     
+    if ($app->can('localize')) {
+        $config->{FILTERS}{localize} ||= [ \&_i18n_localize_factory, 1 ];
+    }
+    
     # Call original BUILDARGS
     return $self->$orig($app,$config);
 };
@@ -59,7 +63,9 @@ around new => sub {
 sub _i18n_numberformat_factory {
     my ( $context, $format, @options ) = @_;
     
-    my $c = $context->stash->get('c');
+    my $stash = $context->stash;
+    my $catalyst_var = $context->{CONFIG}{CATALYST_VAR};
+    my $c = $stash->{$catalyst_var};
     weaken $c;
     
     my $number_format = $c->i18n_numberformat;
@@ -84,7 +90,21 @@ sub _i18n_numberformat_factory {
 sub _i18n_maketext_factory {
     my ( $context,@params ) = @_;
     
-    my $c = $context->stash->get('c');
+    return _i18n_factory_helper('maketext', $context,@params)
+}
+
+sub _i18n_localize_factory {
+    my ( $context,@params ) = @_;
+    
+    return _i18n_factory_helper('localize', $context,@params)
+}
+
+sub _i18n_factory_helper {
+    my ( $method, $context, @params ) = @_;
+    
+    my $stash = $context->stash;
+    my $catalyst_var = $context->{CONFIG}{CATALYST_VAR};
+    my $c = $stash->{$catalyst_var};
     weaken $c;
     
     return sub {
@@ -94,7 +114,7 @@ sub _i18n_maketext_factory {
             @params = @{$params[0]};
         }
         
-        return $c->maketext($msgid,@params);
+        return $c->$method($msgid,@params);
     }
 }
 
@@ -105,7 +125,7 @@ no Moose::Role;
 
 =head1 NAME
 
-CatalystX::I18N::TraitFor::ViewTT - Adds I18N filters and vmethods to a TT view
+CatalystX::I18N::TraitFor::ViewTT - Adds I18N filters and VMethods to a TT view
 
 =head1 SYNOPSIS
 
@@ -156,6 +176,13 @@ Returns the translation for the given string.
 You need to have the L<CatalystX::I18N::Role::Maketext> role loaded in 
 Catalyst.
 
+=head3 localite
+
+Returns the translation for the given string.
+
+You need to have the L<CatalystX::I18N::Role::DataLocalize> role loaded in 
+Catalyst.
+
 =head2 VMethods
 
 =head3 lsort
@@ -166,7 +193,8 @@ the L<CatalystX::I18N::Role::Collate> role loaded in Catalyst.
 =head1 SEE ALSO
 
 L<CatalystX::I18N::Role::NumberFormat>, L<CatalystX::I18N::Role::Collate>, 
-L<CatalystX::I18N::Role::Maketext> and L<Catalyst::View::TT>
+L<CatalystX::I18N::Role::Maketext>, L<CatalystX::I18N::Role::DataLocalize>
+and L<Catalyst::View::TT>
 
 =head1 AUTHOR
 

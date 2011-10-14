@@ -10,7 +10,8 @@ use DateTime::TimeZone;
 use DateTime::Locale;
 use MooseX::Types::Path::Class;
 
-our $LOCALE_RE = qr/^([a-z]{2})(?:_([A-Z]{2}))?$/;
+our $LOCALE_RE = qr/^([a-z]{2,3})(?:_([A-Z]{2}))?$/;
+our $LANGUAGE_RE = qr/^[a-z]{2,3}$/;
 
 subtype 'CatalystX::I18N::Type::Territory'
     => as 'Str'
@@ -22,7 +23,7 @@ subtype 'CatalystX::I18N::Type::Locale'
 
 subtype 'CatalystX::I18N::Type::Language'
     => as 'Str'
-    => where { m/^[a-z]{2}$/ };
+    => where { $_ =~ $LANGUAGE_RE };
 
 subtype 'CatalystX::I18N::Type::Locales'
     => as 'ArrayRef[CatalystX::I18N::Type::Locale]';
@@ -38,6 +39,16 @@ coerce 'CatalystX::I18N::Type::DirList'
     => from 'Path::Class::Dir'
     => via { 
         [ $_ ]
+    }
+    => from 'Str'
+    => via { 
+        [ Path::Class::Dir->new($_) ]
+    }
+    => from 'ArrayRef[Str]'
+    => via { 
+        [ 
+            map { Path::Class::Dir->new($_) } @{$_}
+        ]
     };
 
 subtype 'CatalystX::I18N::Type::DateTimeTimezone' 
@@ -64,3 +75,47 @@ subtype 'CatalystX::I18N::Type::MaketextHandle'
 no Moose::Util::TypeConstraints;
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+CatalystX::I18N::TypeConstraints - Defines I18N Moose type constraints
+
+=head1 SYNOPSIS
+
+ use Moose;
+ use CatalystX::I18N::TypeConstraints;
+ 
+ has 'locale' => (
+    is      => 'rw',
+    isa     => 'CatalystX::I18N::Type::Locale',
+ );
+
+=head1 TYPE CONSTRAINTS
+
+=over
+
+=item * CatalystX::I18N::Type::Territory
+
+=item * CatalystX::I18N::Type::Locale
+
+=item * CatalystX::I18N::Type::Language
+
+=item * CatalystX::I18N::Type::DateTimeTimezone
+
+=item * CatalystX::I18N::Type::DateTimeLocale
+
+=item * CatalystX::I18N::Type::MaketextHandle
+
+=item * CatalystX::I18N::Type::DirList
+
+=back
+
+=head1 AUTHOR
+
+    Maroš Kollár
+    CPAN ID: MAROS
+    maros [at] k-1.com
+    
+    L<http://www.revdev.at>
