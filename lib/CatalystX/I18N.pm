@@ -5,8 +5,7 @@ package CatalystX::I18N;
 use strict;
 use warnings;
 
-use version;
-our $VERSION = version->new('1.08');
+our $VERSION = "1.09";
 our $AUTHORITY = 'cpan:MAROS';
 
 1;
@@ -116,6 +115,10 @@ L<CatalystX::I18N::Role::DataLocalize>
 
 Localize text via L<Data::Localize>. Alternative to 
 L<CatalystX::I18N::Role::Maketext>
+
+=item * L<CatalystX::I18N::Role::PosixLocale> 
+
+Sets the POSIX locale
 
 =item * L<CatalystX::I18N::Role::DateTime>
 

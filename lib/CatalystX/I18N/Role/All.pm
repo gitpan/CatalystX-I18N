@@ -2,8 +2,6 @@
 package CatalystX::I18N::Role::All;
 # ============================================================================
 
-use CatalystX::I18N::Meta::Role;
-
 use namespace::autoclean;
 use Moose::Role;
 requires qw(response_class request_class);
@@ -15,6 +13,7 @@ with qw(
     CatalystX::I18N::Role::GetLocale
     CatalystX::I18N::Role::NumberFormat
     CatalystX::I18N::Role::Collate
+    CatalystX::I18N::Role::PosixLocale
 );
 
 before 'setup' => sub {
@@ -95,6 +94,7 @@ Is same as
      +CatalystX::I18N::Role::Maketext
      +CatalystX::I18N::Role::Collate
      +CatalystX::I18N::Role::NumberFormat
+     +CatalystX::I18N::Role::PosixLocale
  /;
  
  use CatalystX::RoleApplicator;

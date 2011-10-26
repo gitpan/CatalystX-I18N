@@ -12,7 +12,6 @@ use CatalystX::I18N::TypeConstraints;
 
 use POSIX qw();
 
-
 has 'i18n_numberformat' => (
     is          => 'rw',
     isa         => 'Number::Format',
@@ -24,14 +23,32 @@ has 'i18n_numberformat' => (
 sub _build_i18n_numberformat {
     my ($c) = @_;
     
-    my $locale = $c->locale;
+    my $locale = $c->locale.'.UTF-8';
     my $config = $c->i18n_config;
-    
     my $lconv = {};
-    # Only load localeconv if locale is installed/correctly loaded
-    my @current_locale = map { s/\.UTF-8$//i; $_ } split(/\//,POSIX::setlocale(POSIX::LC_ALL));
-    if (grep { $locale eq $_ } @current_locale) {
+    
+    # Get lconv from POSIX
+    # TODO: Get lconv setting only once at Catalyst startup
+    {
+        use locale;
+        no strict 'refs';
+        my %original;
+        
+        # Set locale 
+        foreach my $category (qw(LC_NUMERIC LC_MONETARY)) {
+            my $current_locale = POSIX::setlocale(&{"POSIX::".uc($category)});
+            if ($current_locale ne $locale) {
+                $original{$category} = $current_locale;
+                POSIX::setlocale(&{"POSIX::".uc($category)},$locale);
+            }
+        }
+        
         $lconv = POSIX::localeconv();
+        
+        # Reset locale to original state
+        while (my ($category,$locale) = each %original) {
+            POSIX::setlocale(&{"POSIX::".uc($category)},$locale);
+        }
     }
     
     # Build custom defined for 5.8
