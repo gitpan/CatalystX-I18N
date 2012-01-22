@@ -1,21 +1,21 @@
 ---
 abstract: 'Catalyst internationalisation (I18N) framework'
 author:
-  - 'Maroš Kollár'
+  - 'MaroÅ¡ KollÃ¡r'
 build_requires:
   Catalyst::Plugin::Session: 0
   Catalyst::Plugin::Session::State::Cookie: 0
   Catalyst::Plugin::Session::Store::File: 0
   Catalyst::View::TT: 0
-  ExtUtils::MakeMaker: 6.42
+  ExtUtils::MakeMaker: 6.62
   JSON: 2.17
   Test::Most: 0
   Test::NoWarnings: 0
   Test::WWW::Mechanize::Catalyst: 0
 configure_requires:
-  ExtUtils::MakeMaker: 6.42
+  ExtUtils::MakeMaker: 0
 dynamic_config: 0
-generated_by: 'Module::Install version 1.02, CPAN::Meta::Converter version 2.112621'
+generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.112621'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -23,9 +23,8 @@ meta-spec:
 name: CatalystX-I18N
 no_index:
   directory:
-    - inc
     - t
-    - xt
+    - inc
 requires:
   Catalyst::Runtime: 5.80004
   Clone: 0
@@ -46,7 +45,4 @@ requires:
   Unicode::Collate::Locale: 0
   parent: 0
   perl: 5.008
-resources:
-  license: http://dev.perl.org/licenses/
-  repository: git://github.com/maros/CatalystX-I18N.git
-version: 1.09
+version: 1.10
