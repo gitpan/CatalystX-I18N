@@ -22,10 +22,9 @@ sub BUILD {
     my $class = $self->class;
 
     # Load Maketext class
-    eval {
-        Class::MOP::load_class($class);
-        return 1;
-    } or Catalyst::Exception->throw(sprintf("Could not load '%s' : %s",$class,$@));
+    my ($ok,$error) = Class::Load::try_load_class($class);
+    Catalyst::Exception->throw(sprintf("Could not load '%s' : %s",$class,$error))
+        unless $ok;
     
     Catalyst::Exception->throw(sprintf("Could initialize '%s' because is is not a 'Locale::Maketext' class",$class))
         unless $class->isa('Locale::Maketext');
@@ -53,6 +52,8 @@ sub BUILD {
     } else {
         $app->log->warn(sprintf("'%s' does not implement a 'load_lexicon' method",$class))
     }
+    
+    return;
 }
 
 sub ACCEPT_CONTEXT {

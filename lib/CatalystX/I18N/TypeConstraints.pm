@@ -51,24 +51,6 @@ coerce 'CatalystX::I18N::Type::DirList'
         ]
     };
 
-subtype 'CatalystX::I18N::Type::DateTimeTimezone' 
-    => as class_type('DateTime::TimeZone');
-
-subtype 'CatalystX::I18N::Type::DateTimeLocale' 
-    => as class_type('DateTime::Locale::Base');
-
-coerce 'CatalystX::I18N::Type::DateTimeTimezone'
-    => from 'Str'
-    => via { 
-        DateTime::TimeZone->new( name => $_ ) 
-    };
-    
-coerce 'CatalystX::I18N::Type::DateTimeLocale'
-    => from 'Str'
-    => via { 
-        DateTime::Locale->load( $_ ) 
-    };
-
 subtype 'CatalystX::I18N::Type::MaketextHandle'
     => as duck_type(qw(maketext));
 
@@ -80,7 +62,7 @@ no Moose::Util::TypeConstraints;
 
 =head1 NAME
 
-CatalystX::I18N::TypeConstraints - Defines I18N Moose type constraints
+CatalystX::I18N::TypeConstraints - I18N Moose type constraints
 
 =head1 SYNOPSIS
 
@@ -101,10 +83,6 @@ CatalystX::I18N::TypeConstraints - Defines I18N Moose type constraints
 =item * CatalystX::I18N::Type::Locale
 
 =item * CatalystX::I18N::Type::Language
-
-=item * CatalystX::I18N::Type::DateTimeTimezone
-
-=item * CatalystX::I18N::Type::DateTimeLocale
 
 =item * CatalystX::I18N::Type::MaketextHandle
 

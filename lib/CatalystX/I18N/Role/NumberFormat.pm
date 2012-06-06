@@ -60,7 +60,7 @@ sub _build_i18n_numberformat {
     };
     
     # Set number format
-    my $numberformat = new Number::Format(
+    my $numberformat = Number::Format->new(
         -int_curr_symbol    => $defined_or->($config->{int_curr_symbol},$lconv->{int_curr_symbol},'EUR'),
         -currency_symbol    => $defined_or->($config->{currency_symbol},$lconv->{currency_symbol},'€'),
         -mon_decimal_point  => $defined_or->($config->{mon_decimal_point},$lconv->{mon_decimal_point},'.'),
@@ -125,7 +125,7 @@ CatalystX::I18N::Role::NumberFormat - Support for I18N number formating
 
 =head1 DESCRIPTION
 
-This role add support for localized numbers to your Catalyst application.
+This role add support for localised numbers to your Catalyst application.
 
 All methods are lazy. This means that the values will be only calculated
 upon the first call of the method.

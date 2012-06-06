@@ -14,8 +14,6 @@ around render => sub {
     my $orig  = shift;
     my ( $self,$c,$template,$args ) = @_;
     
-    no warnings 'once';
-    
 #    local $Template::Stash::HASH_OPS;
 #    local $Template::Stash::LIST_OPS;
     
@@ -136,11 +134,11 @@ CatalystX::I18N::TraitFor::ViewTT - Adds I18N filters and VMethods to a TT view
  with qw(CatalystX::I18N::TraitFor::ViewTT);
 
  # In your TT template
- # Localized number format
+ # Localised number format
  [% 22 | number('number') %]
  [% 22 | number %]
  
- # Localized collation
+ # Localised collation
  [% mylist.lsort().join(', ') %]
  
  # Maketext
@@ -178,7 +176,7 @@ Returns the translation for the given string.
 You need to have the L<CatalystX::I18N::Role::Maketext> role loaded in 
 Catalyst.
 
-=head3 localite
+=head3 localize
 
 Returns the translation for the given string.
 

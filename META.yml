@@ -9,7 +9,7 @@ build_requires:
   Catalyst::View::TT: 0
   ExtUtils::MakeMaker: 6.59
   JSON: 2.17
-  Template::Toolkit: 0
+  Template: 0
   Test::Most: 0
   Test::NoWarnings: 0
   Test::WWW::Mechanize::Catalyst: 0
@@ -32,6 +32,7 @@ requires:
   Catalyst::Runtime: 5.80004
   Clone: 0
   Data::Localize: 0
+  Data::Localize::Format::Gettext: 0
   DateTime: 0
   DateTime::Format::CLDR: 0
   DateTime::Locale: 0.40
@@ -42,6 +43,7 @@ requires:
   Locale::Maketext: 0
   Locale::Maketext::Lexicon: 0
   Moose: 0
+  MooseX::Types::DateTime: 0
   MooseX::Types::Path::Class: 0
   Number::Format: 0
   Path::Class: 0
@@ -53,4 +55,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/maros/CatalystX-I18N.git
-version: 1.11
+version: 1.12
