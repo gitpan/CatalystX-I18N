@@ -52,7 +52,7 @@ coerce 'CatalystX::I18N::Type::DirList'
     };
 
 subtype 'CatalystX::I18N::Type::MaketextHandle'
-    => as duck_type(qw(maketext));
+    => as duck_type([qw(maketext)]);
 
 no Moose::Util::TypeConstraints;
 
@@ -96,4 +96,4 @@ CatalystX::I18N::TypeConstraints - I18N Moose type constraints
     CPAN ID: MAROS
     maros [at] k-1.com
     
-    L<http://www.revdev.at>
+    L<http://www.k-1.com>

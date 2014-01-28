@@ -13,8 +13,8 @@ with qw(
     CatalystX::I18N::Role::GetLocale
     CatalystX::I18N::Role::NumberFormat
     CatalystX::I18N::Role::Collate
-    CatalystX::I18N::Role::PosixLocale
 );
+# CatalystX::I18N::Role::PosixLocale
 
 before 'setup' => sub {
     my ($class) = @_;
@@ -25,7 +25,7 @@ before 'setup' => sub {
         
         # Get role
         my $role_class = 'CatalystX::I18N::TraitFor::'.$type;
-        Class::MOP::load_class($role_class);
+        Class::Load::load_class($role_class);
         
         # Check if role has already been applied
         next
@@ -46,7 +46,7 @@ around 'setup_component' => sub {
     my $orig  = shift;
     my ($class,$component) = @_;
     
-    Class::MOP::load_class($component);
+    Class::Load::load_class($component);
     
     # Load View::TT role
     if ($component->isa('Catalyst::View::TT')
@@ -80,7 +80,7 @@ CatalystX::I18N::Role::All - Load all available roles
 
 =head1 DESCRIPTION
 
-This role is just a shortcut for loading every I18N role and trait 
+This role is just a shortcut for loading every I18N role and trait (except POSIX)
 individually.
 
  use Catalyst qw/CatalystX::I18N::Role::All/;
@@ -94,7 +94,6 @@ Is same as
      +CatalystX::I18N::Role::Maketext
      +CatalystX::I18N::Role::Collate
      +CatalystX::I18N::Role::NumberFormat
-     +CatalystX::I18N::Role::PosixLocale
  /;
  
  use CatalystX::RoleApplicator;
@@ -107,4 +106,4 @@ Is same as
     CPAN ID: MAROS
     maros [at] k-1.com
     
-    L<http://www.revdev.at>
+    L<http://www.k-1.com>

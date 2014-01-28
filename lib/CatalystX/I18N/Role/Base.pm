@@ -47,7 +47,7 @@ sub i18n_geocode {
     return 
         unless $territory;
     
-    Class::MOP::load_class('Locale::Geocode');
+    Class::Load::load_class('Locale::Geocode');
     
     my $lc = Locale::Geocode->new();
     return $lc->lookup($territory);
@@ -261,4 +261,4 @@ L<POSIX>, L<Locale::Geocode>
     CPAN ID: MAROS
     maros [at] k-1.com
     
-    L<http://www.revdev.at>
+    L<http://www.k-1.com>
